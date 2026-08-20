@@ -575,6 +575,20 @@
     <script>
 
 
+        /* ==================================
+           ALMACENAMIENTO LOCAL
+           ==================================
+           GitHub Pages solo sirve archivos
+           estáticos: no existe un backend
+           que responda a /api/tareas.
+           Por eso guardamos todo en
+           localStorage, en el propio
+           navegador del usuario.
+           ================================== */
+
+        const CLAVE_STORAGE = 'agenda_tareas';
+
+
         let tareas = [];
 
 
@@ -613,30 +627,63 @@
 
 
         /* ==================================
-           CARGAR TAREAS
+           GENERAR ID ÚNICO
            ================================== */
 
-        async function cargar() {
+        function generarId() {
+
+            return (
+                Date.now().toString(36) +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 8)
+            );
+        }
+
+
+        /* ==================================
+           GUARDAR EN LOCALSTORAGE
+           ================================== */
+
+        function guardarStorage() {
 
             try {
 
-                const respuesta =
-                    await fetch(
-                        '/api/tareas'
+                localStorage.setItem(
+                    CLAVE_STORAGE,
+                    JSON.stringify(tareas)
+                );
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    'No se pudo guardar la tarea.'
+                );
+            }
+        }
+
+
+        /* ==================================
+           CARGAR TAREAS
+           ================================== */
+
+        function cargar() {
+
+            try {
+
+                const datos =
+                    localStorage.getItem(
+                        CLAVE_STORAGE
                     );
-
-
-                if (!respuesta.ok) {
-
-                    throw new Error(
-                        'Error del servidor'
-                    );
-                }
-
 
                 tareas =
-                    await respuesta.json();
-
+                    datos ?
+                        JSON.parse(datos) :
+                        [];
 
                 render();
 
@@ -650,6 +697,10 @@
                 alert(
                     'No se pudieron cargar las tareas.'
                 );
+
+                tareas = [];
+
+                render();
             }
         }
 
@@ -816,12 +867,15 @@
 
         $('form').addEventListener(
             'submit',
-            async function(event) {
+            function(event) {
 
                 event.preventDefault();
 
 
                 const tarea = {
+
+                    id:
+                        generarId(),
 
                     titulo:
                         $('titulo').value,
@@ -836,45 +890,24 @@
                         $('prioridad').value,
 
                     descripcion:
-                        $('descripcion').value
+                        $('descripcion').value,
+
+                    estado:
+                        'Pendiente'
                 };
 
 
                 try {
 
-                    const respuesta =
-                        await fetch(
-                            '/api/tareas',
-                            {
+                    tareas.push(tarea);
 
-                                method: 'POST',
-
-                                headers: {
-
-                                    'Content-Type':
-                                        'application/json'
-                                },
-
-                                body:
-                                    JSON.stringify(
-                                        tarea
-                                    )
-                            }
-                        );
-
-
-                    if (!respuesta.ok) {
-
-                        throw new Error(
-                            'No se pudo guardar'
-                        );
-                    }
+                    guardarStorage();
 
 
                     limpiar();
 
 
-                    await cargar();
+                    render();
 
 
                 } catch (error) {
@@ -896,7 +929,7 @@
            COMPLETAR TAREA
            ================================== */
 
-        async function completar(id) {
+        function completar(id) {
 
             const tarea =
                 tareas.find(
@@ -913,31 +946,14 @@
 
             try {
 
-                await fetch(
-                    '/api/tareas',
-                    {
-
-                        method: 'PUT',
-
-                        headers: {
-
-                            'Content-Type':
-                                'application/json'
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                ...tarea,
-
-                                estado:
-                                    'Completada'
-                            })
-                    }
-                );
+                tarea.estado =
+                    'Completada';
 
 
-                await cargar();
+                guardarStorage();
+
+
+                render();
 
 
             } catch (error) {
@@ -958,7 +974,7 @@
            ELIMINAR TAREA
            ================================== */
 
-        async function eliminar(id) {
+        function eliminar(id) {
 
             const confirmar =
                 confirm(
@@ -974,17 +990,17 @@
 
             try {
 
-                await fetch(
-                    '/api/tareas?id=' +
-                    encodeURIComponent(id),
-
-                    {
-                        method: 'DELETE'
-                    }
-                );
+                tareas =
+                    tareas.filter(
+                        x =>
+                            x.id !== id
+                    );
 
 
-                await cargar();
+                guardarStorage();
+
+
+                render();
 
 
             } catch (error) {
