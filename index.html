@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Agenda de Tareas de Maestros
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #f3f6fb;
+
+            color: #1d2940;
+        }
+
+
+        /* ==========================
+           ENCABEZADO
+           ========================== */
+
+        header {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #173f78,
+                    #5d3ca8
+                );
+
+            width: 100%;
+
+            min-height: 150px;
+
+            padding: 15px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+        }
+
+
+        .logo {
+
+            width: auto;
+
+            height: 125px;
+
+            max-width: 90%;
+
+            object-fit: contain;
+
+            display: block;
+        }
+
+
+        /* ==========================
+           CONTENEDOR
+           ========================== */
+
+        .container {
+
+            max-width: 1150px;
+
+            margin: 25px auto;
+
+            padding: 0 18px;
+        }
+
+
+        /* ==========================
+           TARJETAS
+           ========================== */
+
+        .card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 4px 18px
+                rgba(0,0,0,0.08);
+        }
+
+
+        h2 {
+
+            margin-top: 0;
+
+            color: #173f78;
+        }
+
+
+        /* ==========================
+           FORMULARIO
+           ========================== */
+
+        .form {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+        }
+
+
+        label {
+
+            font-weight: bold;
+        }
+
+
+        input,
+        select,
+        textarea {
+
+            display: block;
+
+            width: 100%;
+
+            margin-top: 6px;
+
+            padding: 11px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-family: Arial, sans-serif;
+        }
+
+
+        textarea {
+
+            min-height: 80px;
+
+            resize: vertical;
+        }
+
+
+        .full {
+
+            grid-column: 1 / -1;
+        }
+
+
+        /* ==========================
+           BOTONES
+           ========================== */
+
+        button {
+
+            border: 0;
+
+            border-radius: 8px;
+
+            padding: 11px 16px;
+
+            margin: 4px;
+
+            cursor: pointer;
+
+            background: #244f91;
+
+            color: white;
+
+            font-weight: bold;
+        }
+
+
+        button:hover {
+
+            opacity: 0.9;
+        }
+
+
+        button.success {
+
+            background: #24945a;
+        }
+
+
+        button.danger {
+
+            background: #c53a3a;
+        }
+
+
+        button.gray {
+
+            background: #687386;
+        }
+
+
+        /* ==========================
+           BUSCADOR
+           ========================== */
+
+        .search {
+
+            width: 100%;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* ==========================
+           TABLA
+           ========================== */
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+
+        th,
+        td {
+
+            padding: 11px;
+
+            border-bottom:
+                1px solid #e5e9ef;
+
+            text-align: left;
+
+            vertical-align: top;
+        }
+
+
+        th {
+
+            background: #eef3fa;
+        }
+
+
+        /* ==========================
+           ESTADOS
+           ========================== */
+
+        .estado {
+
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            background: #fff0bd;
+        }
+
+
+        .completada {
+
+            background: #d7f3e2;
+        }
+
+
+        .actions {
+
+            white-space: nowrap;
+        }
+
+
+        .empty {
+
+            text-align: center;
+
+            padding: 30px;
+        }
+
+
+        /* ==========================
+           RESPONSIVE
+           ========================== */
+
+        @media (max-width: 850px) {
+
+            .form {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+
+            table {
+
+                display: block;
+
+                overflow-x: auto;
+            }
+
+
+            .logo {
+
+                height: 105px;
+            }
+        }
+
+
+        @media (max-width: 550px) {
+
+            .form {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            header {
+
+                min-height: 120px;
+            }
+
+
+            .logo {
+
+                height: 90px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================
+         LOGO
+         ================================== -->
+
+    <header>
+
+        <img
+            src="/logo.png"
+            alt="Agenda de Tareas de Maestros"
+            class="logo"
+        >
+
+    </header>
+
+
+    <!-- ==================================
+         CONTENIDO
+         ================================== -->
+
+    <div class="container">
+
+
+        <!-- ==================================
+             REGISTRAR TAREA
+             ================================== -->
+
+        <section class="card">
+
+            <h2>
+                ➕ Registrar nueva tarea
+            </h2>
+
+
+            <form
+                id="form"
+                class="form"
+            >
+
+
+                <label>
+
+                    Título
+
+                    <input
+                        id="titulo"
+                        required
+                        placeholder="Ej. Preparar examen"
+                    >
+
+                </label>
+
+
+                <label>
+
+                    Fecha
+
+                    <input
+                        id="fecha"
+                        type="date"
+                        required
+                    >
+
+                </label>
+
+
+                <label>
+
+                    Hora
+
+                    <input
+                        id="hora"
+                        type="time"
+                    >
+
+                </label>
+
+
+                <label>
+
+                    Prioridad
+
+                    <select id="prioridad">
+
+                        <option>
+                            Alta
+                        </option>
+
+                        <option selected>
+                            Media
+                        </option>
+
+                        <option>
+                            Baja
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <label class="full">
+
+                    Descripción
+
+                    <textarea
+                        id="descripcion"
+                        placeholder="Detalles de la tarea..."
+                    ></textarea>
+
+                </label>
+
+
+                <div class="full">
+
+                    <button
+                        type="submit"
+                    >
+                        💾 Guardar tarea
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="gray"
+                        onclick="limpiar()"
+                    >
+                        Limpiar
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- ==================================
+             AGENDA
+             ================================== -->
+
+        <section class="card">
+
+            <h2>
+                📅 Agenda
+            </h2>
+
+
+            <input
+                class="search"
+                id="buscar"
+                placeholder="Buscar por título, fecha, prioridad o descripción..."
+                oninput="render()"
+            >
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Título
+                        </th>
+
+                        <th>
+                            Fecha
+                        </th>
+
+                        <th>
+                            Hora
+                        </th>
+
+                        <th>
+                            Prioridad
+                        </th>
+
+                        <th>
+                            Estado
+                        </th>
+
+                        <th>
+                            Descripción
+                        </th>
+
+                        <th>
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="lista">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+    </div>
+
+
+    <!-- ==================================
+         JAVASCRIPT
+         ================================== -->
+
+    <script>
+
+
+        let tareas = [];
+
+
+        const $ =
+            id =>
+                document.getElementById(id);
+
+
+        /* ==================================
+           PROTEGER HTML
+           ================================== */
+
+        function escapeHtml(valor) {
+
+            return String(
+                valor ?? ''
+            ).replace(
+                /[&<>"']/g,
+
+                caracter => ({
+
+                    '&': '&amp;',
+
+                    '<': '&lt;',
+
+                    '>': '&gt;',
+
+                    '"': '&quot;',
+
+                    "'": '&#039;'
+
+                }[caracter])
+
+            );
+        }
+
+
+        /* ==================================
+           CARGAR TAREAS
+           ================================== */
+
+        async function cargar() {
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        '/api/tareas'
+                    );
+
+
+                if (!respuesta.ok) {
+
+                    throw new Error(
+                        'Error del servidor'
+                    );
+                }
+
+
+                tareas =
+                    await respuesta.json();
+
+
+                render();
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    'No se pudieron cargar las tareas.'
+                );
+            }
+        }
+
+
+        /* ==================================
+           MOSTRAR TAREAS
+           ================================== */
+
+        function render() {
+
+            const busqueda =
+                $('buscar')
+                    .value
+                    .toLowerCase();
+
+
+            const resultados =
+                tareas.filter(
+                    tarea =>
+                        JSON.stringify(tarea)
+                            .toLowerCase()
+                            .includes(busqueda)
+                );
+
+
+            if (resultados.length === 0) {
+
+                $('lista').innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty"
+                        >
+
+                            No hay tareas registradas.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+            }
+
+
+            $('lista').innerHTML =
+
+                resultados
+                    .map(
+                        tarea => `
+
+                    <tr>
+
+                        <td>
+
+                            <b>
+                                ${escapeHtml(
+                                    tarea.titulo
+                                )}
+                            </b>
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                                tarea.fecha
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                                tarea.hora
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                                tarea.prioridad
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="estado
+                                ${
+                                    tarea.estado ===
+                                    'Completada'
+                                    ? 'completada'
+                                    : ''
+                                }"
+                            >
+
+                                ${escapeHtml(
+                                    tarea.estado
+                                )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                                tarea.descripcion
+                            )}
+
+                        </td>
+
+
+                        <td class="actions">
+
+                            <button
+                                class="success"
+                                onclick="
+                                    completar(
+                                        '${tarea.id}'
+                                    )
+                                "
+                            >
+                                ✓
+                            </button>
+
+
+                            <button
+                                class="danger"
+                                onclick="
+                                    eliminar(
+                                        '${tarea.id}'
+                                    )
+                                "
+                            >
+                                🗑
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `
+                    )
+                    .join('');
+
+        }
+
+
+        /* ==================================
+           GUARDAR TAREA
+           ================================== */
+
+        $('form').addEventListener(
+            'submit',
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const tarea = {
+
+                    titulo:
+                        $('titulo').value,
+
+                    fecha:
+                        $('fecha').value,
+
+                    hora:
+                        $('hora').value,
+
+                    prioridad:
+                        $('prioridad').value,
+
+                    descripcion:
+                        $('descripcion').value
+                };
+
+
+                try {
+
+                    const respuesta =
+                        await fetch(
+                            '/api/tareas',
+                            {
+
+                                method: 'POST',
+
+                                headers: {
+
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        tarea
+                                    )
+                            }
+                        );
+
+
+                    if (!respuesta.ok) {
+
+                        throw new Error(
+                            'No se pudo guardar'
+                        );
+                    }
+
+
+                    limpiar();
+
+
+                    await cargar();
+
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+                    alert(
+                        'No se pudo guardar la tarea.'
+                    );
+                }
+
+            }
+        );
+
+
+        /* ==================================
+           COMPLETAR TAREA
+           ================================== */
+
+        async function completar(id) {
+
+            const tarea =
+                tareas.find(
+                    x =>
+                        x.id === id
+                );
+
+
+            if (!tarea) {
+
+                return;
+            }
+
+
+            try {
+
+                await fetch(
+                    '/api/tareas',
+                    {
+
+                        method: 'PUT',
+
+                        headers: {
+
+                            'Content-Type':
+                                'application/json'
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                ...tarea,
+
+                                estado:
+                                    'Completada'
+                            })
+                    }
+                );
+
+
+                await cargar();
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    'No se pudo completar la tarea.'
+                );
+            }
+
+        }
+
+
+        /* ==================================
+           ELIMINAR TAREA
+           ================================== */
+
+        async function eliminar(id) {
+
+            const confirmar =
+                confirm(
+                    '¿Desea eliminar esta tarea?'
+                );
+
+
+            if (!confirmar) {
+
+                return;
+            }
+
+
+            try {
+
+                await fetch(
+                    '/api/tareas?id=' +
+                    encodeURIComponent(id),
+
+                    {
+                        method: 'DELETE'
+                    }
+                );
+
+
+                await cargar();
+
+
+            } catch (error) {
+
+                console.error(
+                    error
+                );
+
+                alert(
+                    'No se pudo eliminar la tarea.'
+                );
+            }
+
+        }
+
+
+        /* ==================================
+           LIMPIAR FORMULARIO
+           ================================== */
+
+        function limpiar() {
+
+            $('form').reset();
+
+
+            $('fecha').value =
+                new Date()
+                    .toISOString()
+                    .slice(
+                        0,
+                        10
+                    );
+
+
+            $('prioridad').value =
+                'Media';
+        }
+
+
+        /* ==================================
+           FECHA ACTUAL
+           ================================== */
+
+        $('fecha').value =
+            new Date()
+                .toISOString()
+                .slice(
+                    0,
+                    10
+                );
+
+
+        /* ==================================
+           INICIAR
+           ================================== */
+
+        cargar();
+
+    </script>
+
+
+</body>
+
+</html>
